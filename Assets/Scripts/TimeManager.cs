@@ -33,6 +33,9 @@ public class TimeManager : MonoBehaviour
     public string GetDate() => dateTime.ToString("dd/mm/yyyy", cultureInfo);
     public float GetintervalTime() => intervalTime;
 
+    [Header("ReadOnly")]
+    [SerializeField]
+    string readOnlyTimeString; 
 
     void Start()
     {
@@ -49,6 +52,7 @@ public class TimeManager : MonoBehaviour
             CheckPartsOfDay();
             OnTimeInterval?.Invoke();
             timer = intervalTime;
+            readOnlyTimeString = GetTime() + " " + GetDate();
         }
     }
 

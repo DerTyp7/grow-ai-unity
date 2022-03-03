@@ -27,6 +27,8 @@ public class Person : MonoBehaviour
     public string GetLastName() => lastName;
     public string GetFullName() => firstName + " " + lastName;
 
+
+    TimeManager.PartOfDay prevPartOfDay;
     void Awake()
     {
         city.AddCitizen(this);
@@ -44,23 +46,27 @@ public class Person : MonoBehaviour
 
     void OnTimeInterval()
     {
-        switch (timeManager.partOfDay)
+        if (prevPartOfDay != timeManager.partOfDay)
         {
-            case TimeManager.PartOfDay.NIGHT:
-                movement.SetTarget(house.transform);
-                break;
-            case TimeManager.PartOfDay.MORNING:
-                movement.SetTarget(workplace.transform);
-                break;
-            case TimeManager.PartOfDay.AFTERNOON:
-                movement.SetTarget(workplace.transform);
-                break;
-            case TimeManager.PartOfDay.EVENING:
-                movement.SetTarget(city.transform);
-                break;
-            default:
-                movement.SetTarget(city.transform);
-                break;
+            switch (timeManager.partOfDay)
+            {
+                case TimeManager.PartOfDay.NIGHT:
+                    movement.SetTarget(house.transform);
+                    break;
+                case TimeManager.PartOfDay.MORNING:
+                    movement.SetTarget(workplace.transform);
+                    break;
+                case TimeManager.PartOfDay.AFTERNOON:
+                    movement.SetTarget(workplace.transform);
+                    break;
+                case TimeManager.PartOfDay.EVENING:
+                    movement.SetTarget(city.transform);
+                    break;
+                default:
+                    movement.SetTarget(city.transform);
+                    break;
+            }
+            prevPartOfDay = timeManager.partOfDay;
         }
     }
 }
