@@ -15,11 +15,28 @@ public class Workplace : MonoBehaviour
     List<Person> workers = new List<Person>();
 
     [SerializeField]
+    List<Person> activeWorkers = new List<Person>(); // Workers which are currently present and working
+
+    [SerializeField]
     City city;
+
+    public void AddActiveWorker(Person worker) => activeWorkers.Add(worker);
+    public void RemoveActiveWorker(Person worker) => activeWorkers.Remove(worker);
 
     void Awake()
     {
         city.AddWorkplace(this);
+
+    }
+
+    void Start()
+    {
+        TimeManager.OnHourUpdate += OnHourUpdate;
+    }
+
+    void OnHourUpdate()
+    {
+        EconomyManager.instance.AddMoney(salary * activeWorkers.Count);
     }
 
     public void AddWorker(Person worker)

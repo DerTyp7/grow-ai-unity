@@ -5,7 +5,14 @@ using UnityEngine;
 
 public class TimeManager : MonoBehaviour
 {
-    public static Action OnTimeInterval;
+    public static Action OnTimeUpdate;
+    public static Action OnSecondUpdate;
+    public static Action OnMinuteUpdate;
+    public static Action OnHourUpdate;
+    public static Action OnDayUpdate;
+    public static Action OnMonthUpdate;
+    public static Action OnYearUpdate;
+
     public static TimeManager instance;
 
     public enum PartOfDay
@@ -25,6 +32,7 @@ public class TimeManager : MonoBehaviour
 
     public CultureInfo cultureInfo = new CultureInfo("en-us");
     DateTime dateTime = new DateTime(1, 1, 1, 0, 0, 0);
+    DateTime newDateTime;
     float timer;
 
     public DateTime GetDateTime() => dateTime;
@@ -40,6 +48,7 @@ public class TimeManager : MonoBehaviour
     void Start()
     {
         timer = intervalTime;
+        newDateTime = dateTime;
     }
 
     void Update()
@@ -48,11 +57,26 @@ public class TimeManager : MonoBehaviour
 
         if (timer <= 0)
         {
-            dateTime = dateTime.AddMinutes(minutesPerInterval);
+            newDateTime = dateTime.AddMinutes(minutesPerInterval);
+
+            if(newDateTime.Second != dateTime.Second)
+                OnSecondUpdate?.Invoke();
+            if (newDateTime.Minute != dateTime.Minute)
+                OnMinuteUpdate?.Invoke();
+            if (newDateTime.Hour != dateTime.Hour)
+                OnHourUpdate?.Invoke();
+            if(newDateTime.Day != dateTime.Day)
+                OnDayUpdate?.Invoke();
+            if(newDateTime.Month != dateTime.Month)
+                OnMonthUpdate?.Invoke();
+            if(dateTime.Year != dateTime.Year)
+                OnYearUpdate?.Invoke();
+
+            dateTime = newDateTime;
             CheckPartsOfDay();
-            OnTimeInterval?.Invoke();
             timer = intervalTime;
             readOnlyTimeString = GetTime() + " " + GetDate();
+            OnTimeUpdate?.Invoke();
         }
     }
 

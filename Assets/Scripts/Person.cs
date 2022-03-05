@@ -23,6 +23,8 @@ public class Person : MonoBehaviour
     TimeManager timeManager;
     PersonMovement movement;
 
+    public bool isWorking = false;
+
     public string GetFirstName() => firstName;
     public string GetLastName() => lastName;
     public string GetFullName() => firstName + " " + lastName;
@@ -41,10 +43,10 @@ public class Person : MonoBehaviour
         timeManager = GameObject.Find("GameManager").GetComponent<TimeManager>();
         movement = GetComponent<PersonMovement>();
 
-        TimeManager.OnTimeInterval += OnTimeInterval;
+        TimeManager.OnTimeUpdate += OnTimeUpdate;
     }
 
-    void OnTimeInterval()
+    void OnTimeUpdate()
     {
         if (prevPartOfDay != timeManager.partOfDay)
         {
@@ -55,11 +57,12 @@ public class Person : MonoBehaviour
                     break;
                 case TimeManager.PartOfDay.MORNING:
                     movement.SetTarget(workplace.transform);
+                    workplace.AddActiveWorker(this);
                     break;
                 case TimeManager.PartOfDay.AFTERNOON:
-                    movement.SetTarget(workplace.transform);
                     break;
                 case TimeManager.PartOfDay.EVENING:
+                    workplace.RemoveActiveWorker(this);
                     movement.SetTarget(city.transform);
                     break;
                 default:
