@@ -43,7 +43,13 @@ public class TimeManager : MonoBehaviour
 
     [Header("ReadOnly")]
     [SerializeField]
-    string readOnlyTimeString; 
+    string readOnlyTimeString;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this;
+    }
 
     void Start()
     {

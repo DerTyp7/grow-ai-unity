@@ -14,9 +14,6 @@ public class CameraMovement : MonoBehaviour
 
     [Header("Zoom")]
     [SerializeField]
-    float cameraSize = 15.0f;
-
-    [SerializeField]
     float maxCameraSize = 100f;
 
     [SerializeField]
