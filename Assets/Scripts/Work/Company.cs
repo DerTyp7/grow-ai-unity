@@ -12,6 +12,8 @@ public class Company : MonoBehaviour
 
     [SerializeField] List<Workplace> workplaces= new List<Workplace>();
 
+    public City GetCity() => city;
+
     void Awake()
     {
         city.AddCompany(this);

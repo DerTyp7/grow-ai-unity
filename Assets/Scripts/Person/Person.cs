@@ -34,13 +34,38 @@ public class Person : MonoBehaviour
    
     void Awake()
     {
-        city.AddCitizen(this);
-        house.AddPerson(this);
-        workplace.AddWorker(this);
+        city.AddCitizen(this);       
     }
 
     void Start()
     {
+        foreach (Workplace w in city.GetWorkplaces())
+        {
+            if(workplace == null)
+            {
+                if (w.AddWorker(this))
+                {
+                    workplace = w;
+                    Debug.Log("Workplace added to " + GetFullName());
+                }
+                    
+            }
+        }
+        
+
+        foreach (House h in city.GetHouses())
+        {
+            if(house == null)
+            {
+                if (h.AddPerson(this))
+                {
+                    house = h;
+                    Debug.Log("House added to " + GetFullName());
+                }
+            }
+        }
+        
+
         movement = GetComponent<PersonMovement>();
         indicators = GetComponent<PersonIndicators>();
 
@@ -48,7 +73,7 @@ public class Person : MonoBehaviour
         TimeManager.OnDayUpdate += OnDayUpdate;
 
         SetBehaivorDateTimes();
-        FreeTime();
+        Sleep();
     }
     void OnDayUpdate()
     {
@@ -80,7 +105,7 @@ public class Person : MonoBehaviour
                 status = PersonStatus.FREETIME;
             }
         }
-        else
+        else if (status != PersonStatus.PARK)
         {
             status = PersonStatus.FREETIME;
         }
@@ -91,9 +116,9 @@ public class Person : MonoBehaviour
             Debug.Log(city.GetStores().Count - 1);
             movement.SetTarget(city.GetStores()[Random.Range(0, city.GetStores().Count-1)].transform);
         }
-        else if(status == PersonStatus.FREETIME)
+        else if(status != PersonStatus.PARK)
         {
-            status = PersonStatus.PARK;
+            status = PersonStatus.PARK;// Check if any Object exsits
             movement.SetTarget(city.GetFreeTimeObjects()[Random.Range(0, city.GetFreeTimeObjects().Count)].transform);
         }
     }

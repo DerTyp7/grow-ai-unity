@@ -12,11 +12,14 @@ public class City : MonoBehaviour
     [SerializeField] List<Person> citizens = new List<Person>();
     [SerializeField] List<House> houses = new List<House>();
     [SerializeField] List<Company> companies = new List<Company>();
+    [SerializeField] List<Workplace> workplaces = new List<Workplace>();
     [SerializeField] List<Store> stores = new List<Store>();
     [SerializeField] List<FreeTimeObject> freeTimeObjects = new List<FreeTimeObject>();
 
     public List<Store> GetStores() => stores;
     public List<FreeTimeObject> GetFreeTimeObjects() => freeTimeObjects;
+    public List<House> GetHouses() => houses;
+    public List<Workplace> GetWorkplaces() => workplaces;
 
     public void AddCitizen(Person citizen)
     {
@@ -104,6 +107,23 @@ public class City : MonoBehaviour
         {
             freeTimeObjects.Remove(freeTimeObject);
             Debug.Log("FreeTimeObject demolished in " + cityName);
+        }
+    }
+
+    public void AddWorkplace(Workplace workplace)
+    {
+        if (!workplaces.Contains(workplace))
+        {
+            workplaces.Add(workplace);
+            Debug.Log("workplaces built in " + cityName);
+        }
+    }
+    public void RemoveWorkplace(Workplace workplace)
+    {
+        if (workplaces.Contains(workplace))
+        {
+            workplaces.Remove(workplace);
+            Debug.Log("workplaces demolished in " + cityName);
         }
     }
 }

@@ -5,21 +5,22 @@ using UnityEngine;
 public class Workplace : MonoBehaviour
 {
     [Header("Workplace")]
-    [SerializeField] int space = 1;
+    [SerializeField] int space = 4;
     [SerializeField] float salary = 4.5f;
 
     [SerializeField] List<Person> workers = new List<Person>();
     [SerializeField] List<Person> activeWorkers = new List<Person>(); // Workers which are currently present and working
 
     [SerializeField] Company company;
-
     public void SetCompany(Company _company) => company = _company;
     public void AddActiveWorker(Person worker) => activeWorkers.Add(worker);
     public void RemoveActiveWorker(Person worker) => activeWorkers.Remove(worker);
+    public int GetAvaiableSpace() => space - workers.Count;
 
     void Awake()
     {
         company.AddWorkplace(this);
+        company.GetCity().AddWorkplace(this);
     }
 
     void Start()

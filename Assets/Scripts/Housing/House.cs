@@ -6,7 +6,7 @@ public class House : MonoBehaviour
 {
     [Header("House")]
     [SerializeField]
-    int space = 1;
+    int space = 4;
 
     [SerializeField]
     List<Person> persons = new List<Person>();
@@ -14,18 +14,22 @@ public class House : MonoBehaviour
     [SerializeField]
     City city;
 
+    public int GetAvaiableSpace() => space - persons.Count;
+
     void Awake()
     {
         city.AddHouse(this);
     }
 
-    public void AddPerson(Person person)
+    public bool AddPerson(Person person)
     {
         if (!persons.Contains(person) && persons.Count < space)
         {
             persons.Add(person);
             Debug.Log(person.GetFullName() + " now lives in house");
+            return true;
         }
+        return false;
     }
 
     public void RemovePerson(Person person)
