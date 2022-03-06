@@ -8,14 +8,15 @@ public class City : MonoBehaviour
     [SerializeField]
     string cityName;
 
-    [SerializeField]
-    List<Person> citizens = new List<Person>();
 
-    [SerializeField]
-    List<House> houses = new List<House>();    
+    [SerializeField] List<Person> citizens = new List<Person>();
+    [SerializeField] List<House> houses = new List<House>();
+    [SerializeField] List<Company> companies = new List<Company>();
+    [SerializeField] List<Store> stores = new List<Store>();
+    [SerializeField] List<FreeTimeObject> freeTimeObjects = new List<FreeTimeObject>();
 
-    [SerializeField]
-    List<Workplace> workplaces = new List<Workplace>();
+    public List<Store> GetStores() => stores;
+    public List<FreeTimeObject> GetFreeTimeObjects() => freeTimeObjects;
 
     public void AddCitizen(Person citizen)
     {
@@ -53,21 +54,56 @@ public class City : MonoBehaviour
         }
     }
 
-    public void AddWorkplace(Workplace workplace)
+    public void AddCompany(Company company)
     {
-        if (!workplaces.Contains(workplace))
+        if (!companies.Contains(company))
         {
-            workplaces.Add(workplace);
-            Debug.Log("Workplace built in " + cityName);
+            companies.Add(company);
+            Debug.Log("Company built in " + cityName);
         }
     }
 
-    public void RemoveWorkplace(Workplace workplace)
+    public void RemoveCompany(Company company)
     {
-        if (workplaces.Contains(workplace))
+        if (companies.Contains(company))
         {
-            workplaces.Remove(workplace);
-            Debug.Log("Workplace demolished in " + cityName);
+            companies.Remove(company);
+            Debug.Log("Company demolished in " + cityName);
+        }
+    }
+
+    public void AddStore(Store store)
+    {
+        if (!stores.Contains(store))
+        {
+            stores.Add(store);
+            Debug.Log("Store built in " + cityName);
+        }
+    }
+
+    public void RemoveStore(Store store)
+    {
+        if (stores.Contains(store))
+        {
+            stores.Remove(store);
+            Debug.Log("Store demolished in " + cityName);
+        }
+    }
+    public void AddFreeTimeObject(FreeTimeObject freeTimeObject)
+    {
+        if (!freeTimeObjects.Contains(freeTimeObject))
+        {
+            freeTimeObjects.Add(freeTimeObject);
+            Debug.Log("FreeTimeObject built in " + cityName);
+        }
+    }
+
+    public void RemoveFreeTimeObject(FreeTimeObject freeTimeObject)
+    {
+        if (freeTimeObjects.Contains(freeTimeObject))
+        {
+            freeTimeObjects.Remove(freeTimeObject);
+            Debug.Log("FreeTimeObject demolished in " + cityName);
         }
     }
 }

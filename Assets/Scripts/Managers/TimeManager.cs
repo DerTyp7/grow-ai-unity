@@ -32,13 +32,13 @@ public class TimeManager : MonoBehaviour
 
     public CultureInfo cultureInfo = new CultureInfo("en-us");
     DateTime dateTime = new DateTime(1, 1, 1, 0, 0, 0);
-    DateTime newDateTime;
+    DateTime prevDateTime;
     float timer;
 
     public DateTime GetDateTime() => dateTime;
 
     public string GetTime() => dateTime.ToString("hh:mm tt", cultureInfo);
-    public string GetDate() => dateTime.ToString("dd/mm/yyyy", cultureInfo);
+    public string GetDate() => dateTime.ToString("dd/MM/yyyy", cultureInfo);
     public float GetintervalTime() => intervalTime;
 
     [Header("ReadOnly")]
@@ -54,7 +54,7 @@ public class TimeManager : MonoBehaviour
     void Start()
     {
         timer = intervalTime;
-        newDateTime = dateTime;
+        prevDateTime = dateTime;
     }
 
     void Update()
@@ -63,25 +63,26 @@ public class TimeManager : MonoBehaviour
 
         if (timer <= 0)
         {
-            newDateTime = dateTime.AddMinutes(minutesPerInterval);
+            prevDateTime = dateTime;
 
-            if(newDateTime.Second != dateTime.Second)
-                OnSecondUpdate?.Invoke();
-            if (newDateTime.Minute != dateTime.Minute)
-                OnMinuteUpdate?.Invoke();
-            if (newDateTime.Hour != dateTime.Hour)
-                OnHourUpdate?.Invoke();
-            if(newDateTime.Day != dateTime.Day)
-                OnDayUpdate?.Invoke();
-            if(newDateTime.Month != dateTime.Month)
-                OnMonthUpdate?.Invoke();
-            if(dateTime.Year != dateTime.Year)
-                OnYearUpdate?.Invoke();
-
-            dateTime = newDateTime;
+            dateTime = dateTime.AddMinutes(minutesPerInterval);
             CheckPartsOfDay();
             timer = intervalTime;
             readOnlyTimeString = GetTime() + " " + GetDate();
+
+            if (prevDateTime.Second != dateTime.Second)
+                OnSecondUpdate?.Invoke();
+            if (prevDateTime.Minute != dateTime.Minute)
+                OnMinuteUpdate?.Invoke();
+            if (prevDateTime.Hour != dateTime.Hour)
+                OnHourUpdate?.Invoke();
+            if (prevDateTime.Day != dateTime.Day)
+                OnDayUpdate?.Invoke();
+            if (prevDateTime.Month != dateTime.Month)
+                OnMonthUpdate?.Invoke();
+            if (dateTime.Year != dateTime.Year)
+                OnYearUpdate?.Invoke();
+
             OnTimeUpdate?.Invoke();
         }
     }
