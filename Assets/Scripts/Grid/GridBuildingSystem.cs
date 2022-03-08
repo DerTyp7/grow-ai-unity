@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+// Written with https://www.youtube.com/watch?v=dulosHPl82A
 public class GridBuildingSystem : MonoBehaviour
 {
     [SerializeField] PlacedObjectTypeSO placedObjectTypeSO;
