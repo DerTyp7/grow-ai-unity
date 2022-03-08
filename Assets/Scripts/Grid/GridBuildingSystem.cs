@@ -5,7 +5,8 @@ using UnityEngine;
 // Written with https://www.youtube.com/watch?v=dulosHPl82A
 public class GridBuildingSystem : MonoBehaviour
 {
-    [SerializeField] PlacedObjectTypeSO placedObjectTypeSO;
+    [SerializeField] List<PlacedObjectTypeSO> placedObjectTypeSOList = new List<PlacedObjectTypeSO>(); // https://youtu.be/dulosHPl82A?t=1192
+    PlacedObjectTypeSO placedObjectTypeSO;
 
     Grid<GridObject> grid;
     void Awake()
@@ -15,25 +16,26 @@ public class GridBuildingSystem : MonoBehaviour
         float cellSize = 2f;
 
         grid = new Grid<GridObject>(gridWidth, gridHeight, cellSize, Vector3.zero, (Grid<GridObject> g, int x, int y) => new GridObject(g, x, y));
+        placedObjectTypeSO = placedObjectTypeSOList[0];
     }
     public class GridObject
     {
         int x, y;
         Grid<GridObject> grid;
-        Transform transform;
+        PlacedObject placedObject;
         public GridObject(Grid<GridObject> _grid, int _x, int _y)
         {
             grid = _grid;
             x = _x;
             y = _y;
         }
-        public void SetTransform(Transform _transform) => transform = _transform;
-        public Transform GetTransform() => transform;
-        public void ClearTransform() => transform = null;
+        public void SetPlacedObject(PlacedObject _placedObject) => placedObject = _placedObject;
+        public PlacedObject GetPlacedObject() => placedObject;
+        public void ClearPlacedObject() => placedObject = null;
 
         public bool CanBuild()
         {
-            return transform == null;
+            return placedObject == null;
         }
     }
     void Update()
@@ -58,11 +60,12 @@ public class GridBuildingSystem : MonoBehaviour
 
             if (canBuild)
             {
-                Transform builtTransform = Instantiate(placedObjectTypeSO.prefab, grid.GetWorldPosition(x, y), Quaternion.identity);
+                PlacedObject placedObject = PlacedObject.Create(grid.GetWorldPosition(x, y), new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down, placedObjectTypeSO);
+                
                 
                 foreach(Vector2Int gridPosition in gridPositionList)
                 {
-                    grid.GetGridObject(gridPosition.x, gridPosition.y).SetTransform(builtTransform);
+                    grid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
                 }
                 
             }
@@ -70,6 +73,22 @@ public class GridBuildingSystem : MonoBehaviour
             {
                 Debug.Log("Cannot build here!" + " " + mousePosition);
             }
+        }else if (Input.GetMouseButtonDown(1))
+        {
+            GridObject gridObject = grid.GetGridObject(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            PlacedObject placedObject = gridObject.GetPlacedObject();
+            if (placedObject != null)
+            {
+                placedObject.DestroySelf();
+
+                List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
+
+                foreach (Vector2Int gridPosition in gridPositionList)
+                {
+                    grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
+                }
+            }
+
         }
     }
 }
