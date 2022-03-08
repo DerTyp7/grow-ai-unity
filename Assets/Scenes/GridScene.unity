@@ -223,7 +223,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a9e8b2a885476754e9652c90137f91bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  testTransform: {fileID: 3420327930372171566, guid: 1b0d9211d89253549b71b121b268c59b, type: 3}
+  placedObjectTypeSO: {fileID: 11400000, guid: b08e32832db84ca489b3dd705df7eff7, type: 2}
 --- !u!4 &1522634446
 Transform:
   m_ObjectHideFlags: 0

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GridBuildingSystem : MonoBehaviour
 {
-    [SerializeField] Transform testTransform;
+    [SerializeField] PlacedObjectTypeSO placedObjectTypeSO;
 
     Grid<GridObject> grid;
     void Awake()
@@ -42,11 +42,28 @@ public class GridBuildingSystem : MonoBehaviour
             Vector3 mousePosition = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
             grid.GetXY(mousePosition, out int x, out int y);
 
-            GridObject gridObject = grid.GetGridObject(x, y);
-            if (gridObject.CanBuild())
+            List<Vector2Int> gridPositionList = placedObjectTypeSO.GetGridPositionList(new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down);
+
+            bool canBuild = true;
+            foreach (Vector2Int gridPosition in gridPositionList)
             {
-                Transform builtTransform = Instantiate(testTransform, grid.GetWorldPosition(x, y), Quaternion.identity);
-                gridObject.SetTransform(builtTransform);
+                if(!grid.GetGridObject(gridPosition.x, gridPosition.y).CanBuild())
+                {
+                    // Cannot build here
+                    canBuild = false;
+                    break;
+                }
+            }
+
+            if (canBuild)
+            {
+                Transform builtTransform = Instantiate(placedObjectTypeSO.prefab, grid.GetWorldPosition(x, y), Quaternion.identity);
+                
+                foreach(Vector2Int gridPosition in gridPositionList)
+                {
+                    grid.GetGridObject(gridPosition.x, gridPosition.y).SetTransform(builtTransform);
+                }
+                
             }
             else
             {
