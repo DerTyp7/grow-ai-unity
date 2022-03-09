@@ -15,9 +15,9 @@ public class GridBuildingSystem : MonoBehaviour
         if (instance == null)
             instance = this;
 
-        int gridWidth = 20;
-        int gridHeight = 20;
-        float cellSize = 1f;
+        int gridWidth = GridInfo.instance.gridWidth;
+        int gridHeight = GridInfo.instance.gridHeight;
+        float cellSize = GridInfo.instance.cellSize;
 
         buildingGrid = new Grid<GridObject>(gridWidth, gridHeight, cellSize, Vector3.zero, (Grid<GridObject> g, int x, int y) => new GridObject(g, x, y));
         placedObjectTypeSO = placedObjectTypeSOList[0];

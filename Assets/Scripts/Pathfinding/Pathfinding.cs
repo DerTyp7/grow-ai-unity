@@ -13,9 +13,9 @@ public class Pathfinding {
     private List<PathNode> openList;
     private List<PathNode> closedList;
 
-    public Pathfinding(int width, int height) {
+    public Pathfinding(int width, int height, float cellSize) {
         Instance = this;
-        grid = new Grid<PathNode>(width, height, 1f, Vector3.zero, (Grid<PathNode> g, int x, int y) => new PathNode(g, x, y));
+        grid = new Grid<PathNode>(width, height, cellSize, Vector3.zero, (Grid<PathNode> g, int x, int y) => new PathNode(g, x, y));
     }
 
     public Grid<PathNode> GetGrid() {

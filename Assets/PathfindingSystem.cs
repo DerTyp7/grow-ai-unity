@@ -12,7 +12,11 @@ public class PathfindingSystem : MonoBehaviour
     void Start()
     {
         instance = this;
-        pathfinding = new Pathfinding(20, 10);
+        int gridWidth = GridInfo.instance.gridWidth;
+        int gridHeight = GridInfo.instance.gridHeight;
+        float cellSize = GridInfo.instance.cellSize;
+
+        pathfinding = new Pathfinding(gridWidth, gridHeight, cellSize);
     }
 
     void Update()

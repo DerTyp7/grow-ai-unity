@@ -313,6 +313,10 @@ PrefabInstance:
       propertyPath: city
       value: 
       objectReference: {fileID: 0}
+    - target: {fileID: 3391280458837659705, guid: 4b478a82c8aed4e4e9f09083bf6afa01, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3391280458837659708, guid: 4b478a82c8aed4e4e9f09083bf6afa01, type: 3}
       propertyPath: m_Name
       value: Person
@@ -377,6 +381,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1522634446}
+  - component: {fileID: 1522634448}
   - component: {fileID: 1522634445}
   - component: {fileID: 1522634447}
   m_Layer: 0
@@ -427,6 +432,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db134add0ff65f04aa54ed5edf6d6df2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1522634448
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1522634444}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a9ff0826ad15d5c43859748285744c87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gridWidth: 100
+  gridHeight: 100
+  cellSize: 1
 --- !u!1001 &1762203019
 PrefabInstance:
   m_ObjectHideFlags: 0
