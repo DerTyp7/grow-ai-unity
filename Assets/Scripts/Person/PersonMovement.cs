@@ -1,52 +1,61 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.AI;
 
 public class PersonMovement : MonoBehaviour
 {
     private int currentPathIndex;
-    [SerializeField] private List<Vector3> pathVectorList;
+    [SerializeField] private List<Vector3> pathVectorList = new List<Vector3>();
     private const float speed = 40f;
 
     private void Awake()
     {
-        //agent.avoidancePriority = Random.Range(1, 100);
     }
 
     private void Update()
     {
-        HandleMovement();
 
-        if (Input.GetMouseButton(0))
+        if (Input.GetMouseButtonDown(0))
         {
-            SetTarget(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            Pathfinding pathfinding = PathfindingSystem.instance.pathfinding;
+            Vector3 mouseWorldPosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector3 personPosition = GetPosition();
+
+            pathfinding.GetGrid().GetXY(mouseWorldPosition, out int endX, out int endY);
+            pathfinding.GetGrid().GetXY(personPosition, out int startX, out int startY);
+            List<PathNode> path = pathfinding.FindPath(startX, startY, endX, endY);
+            if (path != null)
+            {
+                float cellSize = pathfinding.GetGrid().GetCellSize();
+                for (int i = 0; i < path.Count - 1; i++)
+                {
+                    Debug.DrawLine(new Vector3(path[i].x, path[i].y) * cellSize + Vector3.one * cellSize / 2, new Vector3(path[i + 1].x, path[i + 1].y) * cellSize + Vector3.one * cellSize / 2, Color.green, 5f);
+                }
+            }
+
+            SetTarget(mouseWorldPosition);
         }
     }
 
-    void HandleMovement()
+    void HandleMovementList()
     {
-        if (pathVectorList != null)
+       if(pathVectorList.Count > 0)
         {
-            Vector3 targetPosition = pathVectorList[currentPathIndex];
-            if (Vector3.Distance(transform.position, targetPosition) > 1f)
+            if(GetPosition() == pathVectorList[0])
             {
-                Vector3 moveDir = (targetPosition - transform.position).normalized;
 
-                float distanceBefore = Vector3.Distance(transform.position, targetPosition);
-                transform.position = transform.position + moveDir * speed * Time.deltaTime;
-            }
-            else
-            {
-                currentPathIndex++;
             }
         }
     }
+
     public Vector3 GetPosition()
     {
         return transform.position;
     }
     public void SetTarget(Vector3 targetTransform)
-    {
+    {   
         pathVectorList = Pathfinding.Instance.FindPath(GetPosition(), targetTransform);
+        Debug.Log(pathVectorList);
     }
 }
