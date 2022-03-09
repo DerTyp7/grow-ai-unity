@@ -15,4 +15,5 @@ MonoBehaviour:
   nameString: Way
   prefab: {fileID: 3420327930372171566, guid: 1b0d9211d89253549b71b121b268c59b, type: 3}
   width: 2
-  height: 1
+  height: 2
+  isWalkable: 1

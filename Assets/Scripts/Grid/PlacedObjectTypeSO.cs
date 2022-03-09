@@ -17,7 +17,6 @@ public class PlacedObjectTypeSO : ScriptableObject
             case Dir.Right: return Dir.Down;
         }
     }
-
     public enum Dir
     {
         Down,
@@ -31,7 +30,7 @@ public class PlacedObjectTypeSO : ScriptableObject
     //public Transform visual;
     public int width;
     public int height;
-
+    public bool isWalkable = false;
 
     public int GetRotationAngle(Dir dir)
     {

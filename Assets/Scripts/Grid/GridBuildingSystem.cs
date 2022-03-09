@@ -5,17 +5,21 @@ using UnityEngine;
 // Written with https://www.youtube.com/watch?v=dulosHPl82A
 public class GridBuildingSystem : MonoBehaviour
 {
+    public static GridBuildingSystem instance;
     [SerializeField] List<PlacedObjectTypeSO> placedObjectTypeSOList = new List<PlacedObjectTypeSO>(); // https://youtu.be/dulosHPl82A?t=1192
     PlacedObjectTypeSO placedObjectTypeSO;
 
-    Grid<GridObject> grid;
+    public Grid<GridObject> buildingGrid;
     void Awake()
     {
+        if (instance == null)
+            instance = this;
+
         int gridWidth = 20;
         int gridHeight = 20;
-        float cellSize = 2f;
+        float cellSize = 1f;
 
-        grid = new Grid<GridObject>(gridWidth, gridHeight, cellSize, Vector3.zero, (Grid<GridObject> g, int x, int y) => new GridObject(g, x, y));
+        buildingGrid = new Grid<GridObject>(gridWidth, gridHeight, cellSize, Vector3.zero, (Grid<GridObject> g, int x, int y) => new GridObject(g, x, y));
         placedObjectTypeSO = placedObjectTypeSOList[0];
     }
     public class GridObject
@@ -40,17 +44,18 @@ public class GridBuildingSystem : MonoBehaviour
     }
     void Update()
     {
-        if (Input.GetMouseButtonDown(0))
+        // PLACE
+        if (Input.GetKeyDown(KeyCode.B))
         {
             Vector3 mousePosition = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-            grid.GetXY(mousePosition, out int x, out int y);
+            buildingGrid.GetXY(mousePosition, out int x, out int y);
 
             List<Vector2Int> gridPositionList = placedObjectTypeSO.GetGridPositionList(new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down);
 
             bool canBuild = true;
             foreach (Vector2Int gridPosition in gridPositionList)
             {
-                if(!grid.GetGridObject(gridPosition.x, gridPosition.y).CanBuild())
+                if(!buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).CanBuild())
                 {
                     // Cannot build here
                     canBuild = false;
@@ -60,12 +65,12 @@ public class GridBuildingSystem : MonoBehaviour
 
             if (canBuild)
             {
-                PlacedObject placedObject = PlacedObject.Create(grid.GetWorldPosition(x, y), new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down, placedObjectTypeSO);
+                PlacedObject placedObject = PlacedObject.Create(buildingGrid.GetWorldPosition(x, y), new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down, placedObjectTypeSO);
                 
                 
                 foreach(Vector2Int gridPosition in gridPositionList)
                 {
-                    grid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
+                    buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
                 }
                 
             }
@@ -73,9 +78,10 @@ public class GridBuildingSystem : MonoBehaviour
             {
                 Debug.Log("Cannot build here!" + " " + mousePosition);
             }
-        }else if (Input.GetMouseButtonDown(1))
+
+        }else if (Input.GetKeyDown(KeyCode.N)) // DEMOLISH
         {
-            GridObject gridObject = grid.GetGridObject(Camera.main.ScreenToWorldPoint(Input.mousePosition));
+            GridObject gridObject = buildingGrid.GetGridObject(Camera.main.ScreenToWorldPoint(Input.mousePosition));
             PlacedObject placedObject = gridObject.GetPlacedObject();
             if (placedObject != null)
             {
@@ -85,7 +91,7 @@ public class GridBuildingSystem : MonoBehaviour
 
                 foreach (Vector2Int gridPosition in gridPositionList)
                 {
-                    grid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
+                    buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
                 }
             }
 

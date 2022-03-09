@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Tilemaps;
 
 public class PlacedObject : MonoBehaviour
 {
@@ -12,6 +13,16 @@ public class PlacedObject : MonoBehaviour
         placedObject.placedObjectTypeSO = placedObjectTypeSO;
         placedObject.origin = origin;
         placedObject.dir = dir;
+
+        if (placedObjectTypeSO.isWalkable) 
+        {
+            foreach(Vector2Int position in placedObject.GetGridPositionList())
+            {
+                Pathfinding.Instance.GetNode(position.x, position.y).SetIsWalkable(true);
+            }
+
+        }
+
         return placedObject;
     }
 
@@ -26,6 +37,13 @@ public class PlacedObject : MonoBehaviour
 
     public void DestroySelf()
     {
+        if (placedObjectTypeSO.isWalkable)
+        {
+            foreach (Vector2Int position in GetGridPositionList())
+            {
+                Pathfinding.Instance.GetNode(position.x, position.y).SetIsWalkable(false);
+            }
+        }
         Destroy(gameObject);
     }
 }

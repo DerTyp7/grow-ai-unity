@@ -69,12 +69,13 @@ public class Person : MonoBehaviour
         movement = GetComponent<PersonMovement>();
         indicators = GetComponent<PersonIndicators>();
 
-        TimeManager.OnMinuteUpdate += OnMinuteUpdate;
+       /* TimeManager.OnMinuteUpdate += OnMinuteUpdate;
         TimeManager.OnDayUpdate += OnDayUpdate;
 
         SetBehaivorDateTimes();
-        Sleep();
+        Sleep();*/
     }
+    /*
     void OnDayUpdate()
     {
         SetBehaivorDateTimes();
@@ -145,5 +146,5 @@ public class Person : MonoBehaviour
             Random.Range(0, 59),
             currentDateTime.Second);
 
-    }
+    }*/
 }
