@@ -8,14 +8,19 @@ public class PersonMovement : MonoBehaviour
     private int currentPathIndex;
     [SerializeField] private List<Vector3> pathVectorList = new List<Vector3>();
     private const float speed = 40f;
+    Rigidbody2D rigidbody;
 
     private void Awake()
     {
+        rigidbody = GetComponent<Rigidbody2D>();
     }
 
-    private void Update()
+    void Update()
     {
+        HandleMovementList();
 
+        /*
+        //Debug
         if (Input.GetMouseButtonDown(0))
         {
             Pathfinding pathfinding = PathfindingSystem.instance.pathfinding;
@@ -35,16 +40,22 @@ public class PersonMovement : MonoBehaviour
             }
 
             SetTarget(mouseWorldPosition);
-        }
+        }*/
     }
 
     void HandleMovementList()
     {
-       if(pathVectorList.Count > 0)
-        {
-            if(GetPosition() == pathVectorList[0])
-            {
 
+       if(pathVectorList != null && pathVectorList.Count > 0)
+        {
+            // Move our position a step closer to the target.
+            float step = speed * Time.deltaTime; // calculate distance to move
+            transform.position = Vector3.MoveTowards(transform.position, pathVectorList[0], step);
+
+            // Check if the position of the cube and sphere are approximately equal.
+            if (Vector3.Distance(transform.position, pathVectorList[0]) < 0.001f)
+            {
+                pathVectorList.RemoveAt(0);
             }
         }
     }
@@ -55,7 +66,6 @@ public class PersonMovement : MonoBehaviour
     }
     public void SetTarget(Vector3 targetTransform)
     {   
-        pathVectorList = Pathfinding.Instance.FindPath(GetPosition(), targetTransform);
-        Debug.Log(pathVectorList);
+        pathVectorList = Pathfinding.Instance.FindPath(GetPosition(), targetTransform);        
     }
 }

@@ -31,6 +31,7 @@ public class PlacedObjectTypeSO : ScriptableObject
     public int width;
     public int height;
     public bool isWalkable = false;
+    public Sprite iconSprite;
 
     public int GetRotationAngle(Dir dir)
     {

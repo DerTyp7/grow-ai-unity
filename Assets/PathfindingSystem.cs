@@ -6,8 +6,9 @@ public class PathfindingSystem : MonoBehaviour
 {
     public static PathfindingSystem instance { get; private set; }
     public Pathfinding pathfinding;
-    int originX = 0;
-    int originY = 0;
+    
+    // int originX = 0;
+    // int originY = 0;
 
     void Start()
     {

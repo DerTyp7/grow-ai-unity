@@ -6,11 +6,12 @@ using UnityEngine;
 public class GridBuildingSystem : MonoBehaviour
 {
     public static GridBuildingSystem instance;
-    [SerializeField] List<PlacedObjectTypeSO> placedObjectTypeSOList = new List<PlacedObjectTypeSO>(); // https://youtu.be/dulosHPl82A?t=1192
-    PlacedObjectTypeSO placedObjectTypeSO;
-
     public Grid<GridObject> buildingGrid;
-    void Awake()
+
+    PlacedObjectTypeSO selectedPlacedObjectTypeSO;
+    Transform selectedGameObjectTransform;
+
+    void Start()
     {
         if (instance == null)
             instance = this;
@@ -20,8 +21,38 @@ public class GridBuildingSystem : MonoBehaviour
         float cellSize = GridInfo.instance.cellSize;
 
         buildingGrid = new Grid<GridObject>(gridWidth, gridHeight, cellSize, Vector3.zero, (Grid<GridObject> g, int x, int y) => new GridObject(g, x, y));
-        placedObjectTypeSO = placedObjectTypeSOList[0];
     }
+
+    void Update()
+    {
+        if(selectedGameObjectTransform != null)
+        {
+            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+            buildingGrid.GetXY(mousePosition, out int x, out int y);
+
+            selectedGameObjectTransform.position = buildingGrid.GetWorldPosition(x, y);
+
+            List<Vector2Int> gridPositionList = selectedPlacedObjectTypeSO.GetGridPositionList(new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down);
+            if (!CanBuild(gridPositionList))
+            {
+                selectedGameObjectTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
+            }
+            else
+            {
+                selectedGameObjectTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+            }
+
+            if (Input.GetMouseButtonDown(0))
+            {
+                PlaceBuilding();
+            }else if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+            {
+                DeselectBuilding();
+            }
+        }        
+    }
+
     public class GridObject
     {
         int x, y;
@@ -42,59 +73,79 @@ public class GridBuildingSystem : MonoBehaviour
             return placedObject == null;
         }
     }
-    void Update()
+
+    public void DemolishBuilding(Vector3 position)
     {
-        // PLACE
-        if (Input.GetKeyDown(KeyCode.B))
+        GridObject gridObject = buildingGrid.GetGridObject(position); // Camera.main.ScreenToWorldPoint(Input.mousePosition)
+        PlacedObject placedObject = gridObject.GetPlacedObject();
+
+        if (placedObject != null)
         {
-            Vector3 mousePosition = new Vector3(Camera.main.ScreenToWorldPoint(Input.mousePosition).x, Camera.main.ScreenToWorldPoint(Input.mousePosition).y);
-            buildingGrid.GetXY(mousePosition, out int x, out int y);
+            placedObject.DestroySelf();
 
-            List<Vector2Int> gridPositionList = placedObjectTypeSO.GetGridPositionList(new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down);
+            List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
 
-            bool canBuild = true;
             foreach (Vector2Int gridPosition in gridPositionList)
             {
-                if(!buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).CanBuild())
-                {
-                    // Cannot build here
-                    canBuild = false;
-                    break;
-                }
+                buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
             }
+        }
+    }
 
-            if (canBuild)
-            {
-                PlacedObject placedObject = PlacedObject.Create(buildingGrid.GetWorldPosition(x, y), new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down, placedObjectTypeSO);
-                
-                
-                foreach(Vector2Int gridPosition in gridPositionList)
-                {
-                    buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
-                }
-                
-            }
-            else
-            {
-                Debug.Log("Cannot build here!" + " " + mousePosition);
-            }
-
-        }else if (Input.GetKeyDown(KeyCode.N)) // DEMOLISH
+    bool CanBuild(List<Vector2Int> gridPositionList)
+    {
+        bool canBuild = true;
+        foreach (Vector2Int gridPosition in gridPositionList)
         {
-            GridObject gridObject = buildingGrid.GetGridObject(Camera.main.ScreenToWorldPoint(Input.mousePosition));
-            PlacedObject placedObject = gridObject.GetPlacedObject();
-            if (placedObject != null)
+            if (!buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).CanBuild())
             {
-                placedObject.DestroySelf();
+                // Cannot build here
+                canBuild = false;
+                break;
+            }
+        }
+        return canBuild;
+    }
 
-                List<Vector2Int> gridPositionList = placedObject.GetGridPositionList();
+    public void PlaceBuilding()
+    {
+        Vector3 position = selectedGameObjectTransform.position;
 
-                foreach (Vector2Int gridPosition in gridPositionList)
-                {
-                    buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).ClearPlacedObject();
-                }
+        Vector3 mousePosition = new Vector3(position.x, position.y);
+        buildingGrid.GetXY(mousePosition, out int x, out int y);
+
+        List<Vector2Int> gridPositionList = selectedPlacedObjectTypeSO.GetGridPositionList(new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down);
+
+       
+
+        if (CanBuild(gridPositionList))
+        {
+            PlacedObject placedObject = PlacedObject.Create(buildingGrid.GetWorldPosition(x, y), new Vector2Int(x, y), PlacedObjectTypeSO.Dir.Down, selectedPlacedObjectTypeSO);
+
+            foreach (Vector2Int gridPosition in gridPositionList)
+            {
+                buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
             }
 
         }
+        else
+        {
+            Debug.Log("Cannot build here!" + " " + mousePosition);
+        }
     }
+
+    public void SelectBuilding(PlacedObjectTypeSO placedObjectTypeSO)
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        selectedGameObjectTransform = Instantiate(placedObjectTypeSO.prefab, mousePosition, Quaternion.identity);
+        selectedPlacedObjectTypeSO = placedObjectTypeSO;
+    }
+
+    public void DeselectBuilding()
+    {
+        Destroy(selectedGameObjectTransform.gameObject);
+        selectedPlacedObjectTypeSO = null;
+        selectedGameObjectTransform = null;
+    }
+
 }

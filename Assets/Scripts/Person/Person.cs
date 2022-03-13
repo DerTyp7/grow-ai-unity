@@ -34,48 +34,51 @@ public class Person : MonoBehaviour
    
     void Awake()
     {
-        city.AddCitizen(this);       
+        
     }
 
-    void Start()
+    void Start ()
     {
-        foreach (Workplace w in city.GetWorkplaces())
-        {
-            if(workplace == null)
-            {
-                if (w.AddWorker(this))
-                {
-                    workplace = w;
-                    Debug.Log("Workplace added to " + GetFullName());
-                }
-                    
-            }
-        }
-        
+        city.AddCitizen(this);
+        house.AddPerson(this);
+        workplace.AddWorker(this);
+        /* foreach (Workplace w in city.GetWorkplaces())
+         {
+             if(workplace == null)
+             {
+                 if (w.AddWorker(this))
+                 {
+                     workplace = w;
+                     Debug.Log("Workplace added to " + GetFullName());
+                 }
 
-        foreach (House h in city.GetHouses())
-        {
-            if(house == null)
-            {
-                if (h.AddPerson(this))
-                {
-                    house = h;
-                    Debug.Log("House added to " + GetFullName());
-                }
-            }
-        }
-        
+             }
+         }
+
+
+         foreach (House h in city.GetHouses())
+         {
+             if(house == null)
+             {
+                 if (h.AddPerson(this))
+                 {
+                     house = h;
+                     Debug.Log("House added to " + GetFullName());
+                 }
+             }
+         }*/
+
 
         movement = GetComponent<PersonMovement>();
         indicators = GetComponent<PersonIndicators>();
 
-       /* TimeManager.OnMinuteUpdate += OnMinuteUpdate;
+        TimeManager.OnMinuteUpdate += OnMinuteUpdate;
         TimeManager.OnDayUpdate += OnDayUpdate;
 
         SetBehaivorDateTimes();
-        Sleep();*/
+        Sleep();
     }
-    /*
+    
     void OnDayUpdate()
     {
         SetBehaivorDateTimes();
@@ -115,25 +118,26 @@ public class Person : MonoBehaviour
         {
             status = PersonStatus.STORE;
             Debug.Log(city.GetStores().Count - 1);
-            movement.SetTarget(city.GetStores()[Random.Range(0, city.GetStores().Count-1)].transform);
+            movement.SetTarget(city.GetStores()[Random.Range(0, city.GetStores().Count-1)].transform.position);
         }
         else if(status != PersonStatus.PARK)
         {
             status = PersonStatus.PARK;// Check if any Object exsits
-            movement.SetTarget(city.GetFreeTimeObjects()[Random.Range(0, city.GetFreeTimeObjects().Count)].transform);
+            movement.SetTarget(city.GetFreeTimeObjects()[Random.Range(0, city.GetFreeTimeObjects().Count)].transform.position);
         }
     }
 
     void Work()
     {
         status = PersonStatus.WORK;
-        movement.SetTarget(workplace.transform);
+        movement.SetTarget(workplace.transform.position);
     }
 
     void Sleep()
     {
         status = PersonStatus.SLEEP;
-        movement.SetTarget(house.transform);
+        Debug.Log(house.transform.position);
+        movement.SetTarget(house.transform.position);
     }
 
     void SetBehaivorDateTimes()
@@ -146,5 +150,5 @@ public class Person : MonoBehaviour
             Random.Range(0, 59),
             currentDateTime.Second);
 
-    }*/
+    }
 }

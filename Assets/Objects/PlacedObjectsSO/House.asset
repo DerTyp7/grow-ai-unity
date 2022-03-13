@@ -10,10 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed4c766e9f0dd454da548c672fa99b65, type: 3}
-  m_Name: way_normal
+  m_Name: House
   m_EditorClassIdentifier: 
-  nameString: Way
-  prefab: {fileID: 3420327930372171566, guid: 1b0d9211d89253549b71b121b268c59b, type: 3}
-  width: 2
-  height: 2
+  nameString: House
+  prefab: {fileID: 8483988689672967185, guid: 23ae9a68a9ff79940adf19a8638591c2, type: 3}
+  width: 4
+  height: 4
   isWalkable: 1
+  iconSprite: {fileID: 0}
