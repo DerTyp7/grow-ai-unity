@@ -145,15 +145,20 @@ public class Person : MonoBehaviour
 
     void Work()
     {
+        if (status != PersonStatus.WORK)
+            movement.SetTarget(workplace.transform.position);
         status = PersonStatus.WORK;
-        movement.SetTarget(workplace.transform.position);
+       
     }
 
     void Sleep()
     {
+        if(status != PersonStatus.SLEEP)
+            movement.SetTarget(house.transform.position);
+
         status = PersonStatus.SLEEP;
         Debug.Log(house.transform.position);
-        movement.SetTarget(house.transform.position);
+        
     }
 
     void SetBehaivorDateTimes()
