@@ -7,7 +7,7 @@ public class PersonMovement : MonoBehaviour
 {
     private int currentPathIndex;
     [SerializeField] private List<Vector3> pathVectorList = new List<Vector3>();
-    private const float speed = 40f;
+    private const float speed = 5f;
     Rigidbody2D rigidbody;
 
     private void Awake()

@@ -11,7 +11,6 @@ GameObject:
   - component: {fileID: 8483988689672967185}
   - component: {fileID: 8483988689672967184}
   - component: {fileID: 8483988689672967183}
-  - component: {fileID: -1315096407495752853}
   m_Layer: 0
   m_Name: House
   m_TagString: Untagged
@@ -100,16 +99,3 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   space: 1
   persons: []
-  city: {fileID: 0}
---- !u!114 &-1315096407495752853
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8483988689672967182}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 56fadc4f2b895ad46bda623c68601c7e, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 

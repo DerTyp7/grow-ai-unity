@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class House : MonoBehaviour
+public class House : PlacedObject
 {
     [Header("House")]
     [SerializeField]
@@ -11,13 +11,13 @@ public class House : MonoBehaviour
     [SerializeField]
     List<Person> persons = new List<Person>();
 
-    [SerializeField]
     City city;
 
     public int GetAvaiableSpace() => space - persons.Count;
 
-    void Awake()
+    public override void OnPlace()
     {
+        city = GameObject.Find("GameManager").GetComponent<City>();
         city.AddHouse(this);
     }
 

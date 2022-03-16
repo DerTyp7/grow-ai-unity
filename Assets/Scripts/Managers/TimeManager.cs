@@ -31,7 +31,7 @@ public class TimeManager : MonoBehaviour
     int minutesPerInterval = 1;
 
     public CultureInfo cultureInfo = new CultureInfo("en-us");
-    DateTime dateTime = new DateTime(1, 1, 1, 0, 0, 0);
+    DateTime dateTime = new DateTime(1, 1, 1, 23, 0, 0);
     DateTime prevDateTime;
     float timer;
 

@@ -6,16 +6,16 @@ public class PathfindingSystem : MonoBehaviour
 {
     public static PathfindingSystem instance { get; private set; }
     public Pathfinding pathfinding;
-    
-    // int originX = 0;
-    // int originY = 0;
+
+
 
     void Start()
     {
         instance = this;
-        int gridWidth = GridInfo.instance.gridWidth;
-        int gridHeight = GridInfo.instance.gridHeight;
-        float cellSize = GridInfo.instance.cellSize;
+
+        int gridWidth = GridBuildingSystem.instance.gridWidth;
+        int gridHeight = GridBuildingSystem.instance.gridHeight;
+        float cellSize = GridBuildingSystem.instance.cellSize;
 
         pathfinding = new Pathfinding(gridWidth, gridHeight, cellSize);
     }

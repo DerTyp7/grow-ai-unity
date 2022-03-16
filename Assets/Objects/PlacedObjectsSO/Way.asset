@@ -10,10 +10,10 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: ed4c766e9f0dd454da548c672fa99b65, type: 3}
-  m_Name: City
+  m_Name: Way
   m_EditorClassIdentifier: 
-  nameString: City
-  prefab: {fileID: 3180108334736411173, guid: a0f5cce80f851794aa28b176e811a46e, type: 3}
+  nameString: Way
+  prefab: {fileID: 3420327930372171566, guid: 1b0d9211d89253549b71b121b268c59b, type: 3}
   width: 1
   height: 1
   isWalkable: 1

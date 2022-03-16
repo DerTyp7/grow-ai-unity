@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Workplace : MonoBehaviour
+public class Workplace : PlacedObject
 {
     [Header("Workplace")]
     [SerializeField] int space = 4;
@@ -11,22 +11,16 @@ public class Workplace : MonoBehaviour
     [SerializeField] List<Person> workers = new List<Person>();
     [SerializeField] List<Person> activeWorkers = new List<Person>(); // Workers which are currently present and working
 
-    [SerializeField] Company company;
-    public void SetCompany(Company _company) => company = _company;
+    City city;
     public void AddActiveWorker(Person worker) => activeWorkers.Add(worker);
     public void RemoveActiveWorker(Person worker) => activeWorkers.Remove(worker);
     public int GetAvaiableSpace() => space - workers.Count;
 
-    void Awake()
+    public override void OnPlace()
     {
-        company.AddWorkplace(this);
-        company.GetCity().AddWorkplace(this);
-    }
-
-    void Start()
-    {
+        city = GameObject.Find("GameManager").GetComponent<City>();
+        city.AddWorkplace(GetComponent<Workplace>());
         TimeManager.OnHourUpdate += OnHourUpdate;
-
     }
 
     void OnTriggerEnter2D(Collider2D collision)

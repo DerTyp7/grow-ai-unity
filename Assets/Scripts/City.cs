@@ -9,7 +9,7 @@ public class City : MonoBehaviour
     string cityName;
 
 
-    [SerializeField] List<Person> citizens = new List<Person>();
+    [SerializeField] List<Person> persons = new List<Person>();
     [SerializeField] List<House> houses = new List<House>();
     [SerializeField] List<Company> companies = new List<Company>();
     [SerializeField] List<Workplace> workplaces = new List<Workplace>();
@@ -21,20 +21,20 @@ public class City : MonoBehaviour
     public List<House> GetHouses() => houses;
     public List<Workplace> GetWorkplaces() => workplaces;
 
-    public void AddCitizen(Person citizen)
+    public void AddPerson(Person citizen)
     {
-        if (!citizens.Contains(citizen))
+        if (!persons.Contains(citizen))
         {
-            citizens.Add(citizen);
+            persons.Add(citizen);
             Debug.Log(citizen.GetFullName() + " joined " + cityName);
         }
     }
 
-    public void RemoveCitizen(Person citizen)
+    public void RemovePerson(Person citizen)
     {
-        if (citizens.Contains(citizen))
+        if (persons.Contains(citizen))
         {
-            citizens.Remove(citizen);
+            persons.Remove(citizen);
             Debug.Log(citizen.GetFullName() + " left " + cityName);
         }
     }
@@ -55,6 +55,36 @@ public class City : MonoBehaviour
             houses.Remove(house);
             Debug.Log("House demolished in " + cityName);
         }
+    }
+
+    public House GetAvaiableHouse()
+    {
+        List<House> avaiableHouses = new List<House>();
+        foreach (House house in houses)
+        {
+            if(house.GetAvaiableSpace() > 0)
+                avaiableHouses.Add(house);
+        }
+
+        if(avaiableHouses.Count > 0)
+        {
+            return avaiableHouses[Random.Range(0, avaiableHouses.Count - 1)];
+        }
+        else
+        {
+            return null;
+        }
+        
+    }
+
+    public int GetAvaiableHousingSpace()
+    {
+        int space = 0;
+        foreach(House house in houses)
+        {
+            space += house.GetAvaiableSpace();
+        }
+        return space;
     }
 
     public void AddCompany(Company company)
@@ -124,6 +154,25 @@ public class City : MonoBehaviour
         {
             workplaces.Remove(workplace);
             Debug.Log("workplaces demolished in " + cityName);
+        }
+    }
+
+    public Workplace GetAvaiableWorkplace()
+    {
+        List<Workplace> avaiableWorkplaces = new List<Workplace>();
+        foreach (Workplace workplace in workplaces)
+        {
+            if (workplace.GetAvaiableSpace() > 0)
+                avaiableWorkplaces.Add(workplace);
+        }
+
+        if (avaiableWorkplaces.Count > 0)
+        {
+            return avaiableWorkplaces[Random.Range(0, avaiableWorkplaces.Count - 1)];
+        }
+        else
+        {
+            return null;
         }
     }
 }
