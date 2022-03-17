@@ -18,3 +18,4 @@ MonoBehaviour:
   height: 4
   isWalkable: 1
   iconSprite: {fileID: 0}
+  placedObjectType: 1
