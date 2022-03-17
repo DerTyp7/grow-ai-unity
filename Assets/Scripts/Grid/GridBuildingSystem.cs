@@ -86,14 +86,26 @@ public class GridBuildingSystem : MonoBehaviour
                 selectedGameObjectTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
             }
 
-            if (Input.GetMouseButtonDown(0))
+            if(selectedPlacedObjectTypeSO.placedObjectType == PlacedObjectTypeSO.PlacedObjectType.WAY)
             {
-                PlaceBuilding();
+                if (Input.GetMouseButton(0))
+                {
+                    PlaceBuilding();
+                }
             }
-            else if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+            else
+            {
+                if (Input.GetMouseButtonDown(0))
+                {
+                    PlaceBuilding();
+                }
+            }
+
+            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
             {
                 DeselectBuilding();
             }
+
         }
     }
     public void DemolishBuilding(Vector3 position)

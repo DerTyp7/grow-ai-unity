@@ -5,7 +5,11 @@ using UnityEngine;
 [CreateAssetMenu()]
 public class PlacedObjectTypeSO : ScriptableObject
 {
-
+    public enum PlacedObjectType
+    {
+        WAY,
+        BULDING
+    }
     public string nameString;
     public Transform prefab;
     //public Transform visual;
@@ -13,7 +17,7 @@ public class PlacedObjectTypeSO : ScriptableObject
     public int height;
     public bool isWalkable = false;
     public Sprite iconSprite;
-
+    public PlacedObjectType placedObjectType = PlacedObjectType.BULDING;
 
     public List<Vector2Int> GetGridPositionList(Vector2Int offset)
     {
