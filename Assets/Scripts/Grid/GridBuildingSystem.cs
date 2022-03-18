@@ -15,6 +15,11 @@ public class GridBuildingSystem : MonoBehaviour
     PlacedObjectTypeSO selectedPlacedObjectTypeSO;
     Transform selectedGameObjectTransform;
 
+    Vector3 selectedWayStart;
+
+    public List<GameObject> blueprintWayList = new List<GameObject>();
+    bool isPlacingWay = false;
+
     public class GridObject
     {
         int x, y;
@@ -51,63 +56,109 @@ public class GridBuildingSystem : MonoBehaviour
 
     void Update()
     {
-        UpdateSelectedGameObject();
-
-        // DEBUG
-        if (Input.GetKeyDown(KeyCode.U))
+        if (selectedGameObjectTransform != null)
         {
-            buildingGrid.GetGridObject(Camera.main.ScreenToWorldPoint(Input.mousePosition)).SwitchIsAccessable();
+            if (selectedPlacedObjectTypeSO.placedObjectType == PlacedObjectTypeSO.PlacedObjectType.WAY)
+            {
+                UpdateWayDrawing();
+            }
+            else
+            {
+                UpdateSelectedGameObject();
+            }
+        }
+    }
+
+    void UpdateWayDrawing()
+    {
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+        List<GameObject> dontDeleteBlueprintList = new List<GameObject>();
+
+        if (isPlacingWay)
+        {
+            foreach (Vector3 position in Pathfinding.Instance.FindPath(selectedWayStart, mousePosition, true))
+            {
+                GameObject placedBuilding = PlaceBuilding(position);
+                if (placedBuilding != null)
+                {
+                    placedBuilding.GetComponent<PlacedObject>().isBlueprint = true;
+                    dontDeleteBlueprintList.Add(placedBuilding);
+                    blueprintWayList.Add(placedBuilding);
+                }
+                else
+                {
+                    buildingGrid.GetXY(position, out int x, out int y);
+                    PlacedObject tempPlacedObject = buildingGrid.GetGridObject(x, y).GetPlacedObject();
+                    if (tempPlacedObject.isBlueprint)
+                    {
+                        dontDeleteBlueprintList.Add(tempPlacedObject.gameObject);
+                    }
+                }
+            }
+
+        }
+        
+        foreach(GameObject blueprint in blueprintWayList)
+        {
+            if (!dontDeleteBlueprintList.Contains(blueprint))
+            {
+                Destroy(blueprint);
+            }
         }
 
-        if (Input.GetKeyDown(KeyCode.F))
+        if (Input.GetMouseButtonDown(0))
         {
-            buildingGrid.GetGridObject(Camera.main.ScreenToWorldPoint(Input.mousePosition)).GetPlacedObject();
+            if (isPlacingWay)
+            {
+                // PLACE EVERYTHING
+                foreach (GameObject blueprint in blueprintWayList)
+                {
+                    blueprint.GetComponent<PlacedObject>().isBlueprint = false;
+                    blueprintWayList.Remove(blueprint);
+                }
+                isPlacingWay = false;
+            }
+            else
+            {
+                isPlacingWay = true;
+                selectedWayStart = mousePosition;
+            }
         }
-
     }
 
     void UpdateSelectedGameObject()
     {
-        if (selectedGameObjectTransform != null)
+        Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+        buildingGrid.GetXY(mousePosition, out int x, out int y);
+
+        selectedGameObjectTransform.position = buildingGrid.GetWorldPosition(x, y);
+
+        List<Vector2Int> gridPositionList = selectedPlacedObjectTypeSO.GetGridPositionList(new Vector2Int(x, y));
+        if (!CanBuild(gridPositionList))
         {
-            Vector3 mousePosition = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-            buildingGrid.GetXY(mousePosition, out int x, out int y);
-
-            selectedGameObjectTransform.position = buildingGrid.GetWorldPosition(x, y);
-
-            List<Vector2Int> gridPositionList = selectedPlacedObjectTypeSO.GetGridPositionList(new Vector2Int(x, y));
-            if (!CanBuild(gridPositionList))
-            {
-                selectedGameObjectTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
-            }
-            else
-            {
-                selectedGameObjectTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
-            }
-
-            if(selectedPlacedObjectTypeSO.placedObjectType == PlacedObjectTypeSO.PlacedObjectType.WAY)
-            {
-                if (Input.GetMouseButton(0))
-                {
-                    PlaceBuilding();
-                }
-            }
-            else
-            {
-                if (Input.GetMouseButtonDown(0))
-                {
-                    PlaceBuilding();
-                }
-            }
-
-            if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
-            {
-                DeselectBuilding();
-            }
-
+            selectedGameObjectTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.red;
         }
+        else if (selectedPlacedObjectTypeSO.placedObjectType != PlacedObjectTypeSO.PlacedObjectType.WAY)
+        {
+            selectedGameObjectTransform.gameObject.GetComponent<SpriteRenderer>().color = Color.white;
+        }
+
+        if (Input.GetMouseButtonDown(0))
+        {
+                
+            PlaceBuilding(selectedGameObjectTransform.position);
+        }
+            
+
+        if (Input.GetMouseButtonDown(1) || Input.GetKeyDown(KeyCode.Escape))
+        {
+            DeselectBuilding();
+        }
+
+        
     }
+
     public void DemolishBuilding(Vector3 position)
     {
         GridObject gridObject = buildingGrid.GetGridObject(position); // Camera.main.ScreenToWorldPoint(Input.mousePosition)
@@ -141,12 +192,11 @@ public class GridBuildingSystem : MonoBehaviour
         return canBuild;
     }
 
-    public void PlaceBuilding()
+    public GameObject PlaceBuilding(Vector3 position)
     {
-        Vector3 position = selectedGameObjectTransform.position;
-
-        Vector3 mousePosition = new Vector3(position.x, position.y);
-        buildingGrid.GetXY(mousePosition, out int x, out int y);
+        Debug.Log("HALLO");
+        position = new Vector3(position.x, position.y);
+        buildingGrid.GetXY(position, out int x, out int y);
 
         List<Vector2Int> gridPositionList = selectedPlacedObjectTypeSO.GetGridPositionList(new Vector2Int(x, y));
 
@@ -160,12 +210,13 @@ public class GridBuildingSystem : MonoBehaviour
             {
                 buildingGrid.GetGridObject(gridPosition.x, gridPosition.y).SetPlacedObject(placedObject);
             }
-
+            return placedObject.gameObject;
         }
         else
         {
-            Debug.Log("Cannot build here!" + " " + mousePosition);
+            Debug.Log("Cannot build here!" + " " + position);
         }
+        return null;
     }
 
     public void SelectBuilding(PlacedObjectTypeSO placedObjectTypeSO)
@@ -180,6 +231,7 @@ public class GridBuildingSystem : MonoBehaviour
         Destroy(selectedGameObjectTransform.gameObject);
         selectedPlacedObjectTypeSO = null;
         selectedGameObjectTransform = null;
+        isPlacingWay = false;
     }
 
 }

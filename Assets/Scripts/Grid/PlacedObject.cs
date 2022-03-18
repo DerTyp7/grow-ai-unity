@@ -14,6 +14,7 @@ public abstract class PlacedObject : MonoBehaviour
         placedObject.origin = origin;
 
         placedObject.OnPlace();
+        placedObject.isBlueprint = false;
 
         if (placedObjectTypeSO.isWalkable) 
         {
@@ -30,6 +31,7 @@ public abstract class PlacedObject : MonoBehaviour
     PlacedObjectTypeSO placedObjectTypeSO;
     Vector2Int origin;
 
+    public bool isBlueprint = true;
     public abstract void OnPlace();
 
     public List<Vector2Int> GetGridPositionList()

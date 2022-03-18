@@ -22,11 +22,11 @@ public class Pathfinding {
         return grid;
     }
 
-    public List<Vector3> FindPath(Vector3 startWorldPosition, Vector3 endWorldPosition) {
+    public List<Vector3> FindPath(Vector3 startWorldPosition, Vector3 endWorldPosition, bool ignoreIsWalkable = false) {
         grid.GetXY(startWorldPosition, out int startX, out int startY);
         grid.GetXY(endWorldPosition, out int endX, out int endY);
 
-        List<PathNode> path = FindPath(startX, startY, endX, endY);
+        List<PathNode> path = FindPath(startX, startY, endX, endY, ignoreIsWalkable);
         if (path == null) {
             return null;
         } else {
@@ -38,7 +38,7 @@ public class Pathfinding {
         }
     }
 
-    public List<PathNode> FindPath(int startX, int startY, int endX, int endY) {
+    public List<PathNode> FindPath(int startX, int startY, int endX, int endY, bool ignoreIsWalkable = false) {
         PathNode startNode = grid.GetGridObject(startX, startY);
         PathNode endNode = grid.GetGridObject(endX, endY);
 
@@ -75,7 +75,7 @@ public class Pathfinding {
 
             foreach (PathNode neighbourNode in GetNeighbourList(currentNode)) {
                 if (closedList.Contains(neighbourNode)) continue;
-                if (!neighbourNode.isWalkable) {
+                if (!neighbourNode.isWalkable && !ignoreIsWalkable) { // If neighbouring node is not walkable instantly add them to closed
                     closedList.Add(neighbourNode);
                     continue;
                 }
