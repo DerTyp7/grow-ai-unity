@@ -194,7 +194,6 @@ public class GridBuildingSystem : MonoBehaviour
 
     public GameObject PlaceBuilding(Vector3 position)
     {
-        Debug.Log("HALLO");
         position = new Vector3(position.x, position.y);
         buildingGrid.GetXY(position, out int x, out int y);
 
@@ -214,7 +213,7 @@ public class GridBuildingSystem : MonoBehaviour
         }
         else
         {
-            Debug.Log("Cannot build here!" + " " + position);
+            //Debug.Log("Cannot build here!" + " " + position);
         }
         return null;
     }

@@ -1,7 +1,7 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 public class Pathfinding {
 
     private const int MOVE_STRAIGHT_COST = 10;
@@ -16,6 +16,11 @@ public class Pathfinding {
     public Pathfinding(int width, int height, float cellSize) {
         Instance = this;
         grid = new Grid<PathNode>(width, height, cellSize, Vector3.zero, (Grid<PathNode> g, int x, int y) => new PathNode(g, x, y));
+
+        foreach (PathNode node in grid.gridArray) {
+            node.neighbourList = GetNeighbourList(node);
+        }
+
     }
 
     public Grid<PathNode> GetGrid() {
@@ -39,6 +44,8 @@ public class Pathfinding {
     }
 
     public List<PathNode> FindPath(int startX, int startY, int endX, int endY, bool ignoreIsWalkable = false) {
+        var timer = new System.Diagnostics.Stopwatch();
+        timer.Start();
         PathNode startNode = grid.GetGridObject(startX, startY);
         PathNode endNode = grid.GetGridObject(endX, endY);
 
@@ -67,13 +74,16 @@ public class Pathfinding {
             PathNode currentNode = GetLowestFCostNode(openList);
             if (currentNode == endNode) {
                 // Reached final node
+                timer.Stop();
+                TimeSpan timeTaken = timer.Elapsed;
+                Debug.Log("Time taken: " + timeTaken.ToString(@"m\:ss\.fff"));
                 return CalculatePath(endNode);
             }
 
             openList.Remove(currentNode);
             closedList.Add(currentNode);
 
-            foreach (PathNode neighbourNode in GetNeighbourList(currentNode)) {
+            foreach (PathNode neighbourNode in currentNode.neighbourList) {
                 if (closedList.Contains(neighbourNode)) continue;
                 if (!neighbourNode.isWalkable && !ignoreIsWalkable) { // If neighbouring node is not walkable instantly add them to closed
                     closedList.Add(neighbourNode);

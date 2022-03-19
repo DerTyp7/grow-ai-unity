@@ -15,10 +15,12 @@ public class PathNode {
     public bool isWalkable;
     public PathNode cameFromNode;
 
-    public PathNode(Grid<PathNode> grid, int x, int y) {
-        this.grid = grid;
-        this.x = x;
-        this.y = y;
+    public List<PathNode> neighbourList = new List<PathNode>();
+
+    public PathNode(Grid<PathNode> _grid, int _x, int _y) {
+        grid = _grid;
+        x = _x;
+        y = _y;
         isWalkable = false;
     }
 

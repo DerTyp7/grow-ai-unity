@@ -6,7 +6,7 @@ public class Way : PlacedObject
 {
     public override void OnPlace()
     {
-        Debug.Log("Placed Way");
+        //Debug.Log("Placed Way");
     }
 
 }

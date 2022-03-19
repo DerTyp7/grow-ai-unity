@@ -8,7 +8,7 @@ public class Grid<TGridObject>
     int width, height;
     float cellSize;
     Vector3 originPosition;
-    TGridObject[,] gridArray;
+    public TGridObject[,] gridArray;
 
     bool showDebug = true;
 
